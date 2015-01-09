@@ -1282,9 +1282,9 @@ class NodeWrapper implements Node
             // Prepare left & right query
             $metadata = $em->getClassMetadata(get_class($this->getNode()));
             $q = $em->createQueryBuilder()            
-            ->update($metadata->rootEntityName, 'n')
-            ->set("n.$field", "n.$field + :delta")
-            ->setParameter('delta', $delta)
+            ->update($metadata->name, 'n')
+            ->set("n.$field", ":delta")
+            ->setParameter('delta', "n.$field + $delta")
             ->where("n.$field >= :lowerbound")
             ->setParameter('lowerbound', $first);
 
