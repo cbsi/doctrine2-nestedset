@@ -1354,18 +1354,18 @@ class NodeWrapper implements Node
         //echo "\nRelocating: oldLft=$oldLft, oldRgt=$oldRgt, diff=$diff, oldRoot=$oldRoot, newRoot=$newRoot\n";
         $qb = $em->createQueryBuilder()
             ->update(get_class($this->getNode()), 'n')
-            ->set("n.$lftField", "n.$lftField + ?1")
-            ->setParameter(1, $diff)
-            ->set("n.$rgtField", "n.$rgtField + ?2")
-            ->setParameter(2, $diff)
-            ->set("n.$rootField", "?3")
-            ->setParameter(3, $newRoot)
-            ->where("n.$lftField > ?4")
-            ->setParameter(4, $oldLft)
-            ->andWhere("n.$rgtField < ?5")
-            ->setParameter(5, $oldRgt)
-            ->andWhere("n.$rootField = ?6")
-            ->setParameter(6, $oldRoot);
+            ->set("n.$lftField", ":lft")
+            ->setParameter('lft', "n.$lftField + " . $diff)
+            ->set("n.$rgtField", ":rgt")
+            ->setParameter('rgt', "n.$rgtField +" . $diff)
+            ->set("n.$rootField", ":rootField")
+            ->setParameter(':rootField', $newRoot)
+            ->where("n.$lftField > :inf")
+            ->setParameter('inf', $oldLft)
+            ->andWhere("n.$rgtField < :sup")
+            ->setParameter('sup', $oldRgt)
+            ->andWhere("n.$rootField = :oldRoot")
+            ->setParameter('oldRoot', $oldRoot);
         $qb->getQuery()->execute();
         $this->getManager()->updateValues($oldLft, $oldRgt, $diff, $oldRoot, $newRoot);
 
