@@ -1168,8 +1168,9 @@ class NodeWrapper implements Node
         $em->getConnection()->beginTransaction();
         try
         {
+            $metadata = $em->getClassMetadata(get_class($this->getNode()));
             $qb = $em->createQueryBuilder()
-                ->delete(get_class($this->getNode()), 'n')
+                ->delete($metadata->rootEntityName, 'n')
                 ->where("n.$lftField >= ?1")
                 ->setParameter(1, $oldLft)
                 ->andWhere("n.$rgtField <= ?2")
